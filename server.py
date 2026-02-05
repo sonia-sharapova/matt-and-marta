@@ -1,15 +1,13 @@
 #!/usr/bin/env python3
-# server.py - Python Flask backend for RSVP form
-# Install dependencies: pip install flask flask-cors python-dotenv
+# server.py - Python Flask backend for RSVP form using system mail command
+# Install dependencies: pip3 install flask flask-cors python-dotenv
 
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-import smtplib
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
 from datetime import datetime
 import os
 import json
+import subprocess
 from dotenv import load_dotenv
 
 # Load environment variables
@@ -18,25 +16,20 @@ load_dotenv()
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
 
-# Email configuration from environment variables
-SMTP_HOST = os.getenv('SMTP_HOST')
-SMTP_PORT = int(os.getenv('SMTP_PORT', 587))
-SMTP_USER = os.getenv('SMTP_USER')
-SMTP_PASS = os.getenv('SMTP_PASS')
-RECIPIENT_EMAIL = os.getenv('RECIPIENT_EMAIL')
+# Email recipients from environment variables (comma-separated)
+RECIPIENT_EMAILS = os.getenv('RECIPIENT_EMAILS', 'rsvp@matt-and-marta.com')
 
-def send_email(rsvp_data):
-    """Send RSVP data via email"""
+def send_email_via_mail(rsvp_data):
+    """Send RSVP data via system mail command"""
     try:
-        # Create message
-        msg = MIMEMultipart('alternative')
-        msg['Subject'] = f"Wedding RSVP: {rsvp_data['fullName']}"
-        msg['From'] = SMTP_USER
-        msg['To'] = RECIPIENT_EMAIL
+        # Parse recipients (comma-separated)
+        recipients = [email.strip() for email in RECIPIENT_EMAILS.split(',')]
 
-        # Plain text version
-        text_content = f"""
-New RSVP Submission
+        # Create email subject
+        subject = f"Wedding RSVP: {rsvp_data['fullName']}"
+
+        # Create email body
+        body = f"""New RSVP Submission
 
 Name: {rsvp_data['fullName']}
 Email: {rsvp_data['email']}
@@ -45,62 +38,56 @@ Attending: {rsvp_data['attending']}
 Attending Afterparty: {rsvp_data['afterparty']}
 Dietary Restrictions: {rsvp_data['dietary']}
 Submitted: {rsvp_data['timestamp']}
-        """
+"""
 
-        # HTML version
-        html_content = f"""
-        <html>
-            <body>
-                <h2>New RSVP Submission</h2>
-                <p><strong>Name:</strong> {rsvp_data['fullName']}</p>
-                <p><strong>Email:</strong> {rsvp_data['email']}</p>
-                <p><strong>Phone:</strong> {rsvp_data['phone']}</p>
-                <p><strong>Attending:</strong> {rsvp_data['attending']}</p>
-                <p><strong>Attending Afterparty:</strong> {rsvp_data['afterparty']}</p>
-                <p><strong>Dietary Restrictions:</strong> {rsvp_data['dietary']}</p>
-                <p><strong>Submitted:</strong> {rsvp_data['timestamp']}</p>
-            </body>
-        </html>
-        """
+        # Send to each recipient using mail command
+        for recipient in recipients:
+            process = subprocess.Popen(
+                ['mail', '-s', subject, recipient],
+                stdin=subprocess.PIPE,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True
+            )
+            stdout, stderr = process.communicate(input=body)
 
-        # Attach both versions
-        part1 = MIMEText(text_content, 'plain')
-        part2 = MIMEText(html_content, 'html')
-        msg.attach(part1)
-        msg.attach(part2)
+            if process.returncode != 0:
+                print(f"Error sending to {recipient}: {stderr}")
+                return False
 
-        # Send email
-        with smtplib.SMTP(SMTP_HOST, SMTP_PORT) as server:
-            server.starttls()
-            server.login(SMTP_USER, SMTP_PASS)
-            server.send_message(msg)
-
+        print(f"Successfully sent email to: {', '.join(recipients)}")
         return True
+
     except Exception as e:
         print(f"Error sending email: {e}")
         return False
 
-def save_to_file(rsvp_data):
-    """Save RSVP to JSON file as backup"""
+def save_to_json(rsvp_data):
+    """Save RSVP to JSON file"""
     try:
         filename = 'rsvps.json'
         rsvps = []
-        
+
         # Read existing data if file exists
         if os.path.exists(filename):
             with open(filename, 'r') as f:
-                rsvps = json.load(f)
-        
+                try:
+                    rsvps = json.load(f)
+                except json.JSONDecodeError:
+                    rsvps = []
+
         # Append new RSVP
         rsvps.append(rsvp_data)
-        
-        # Write back to file
+
+        # Write back to file with pretty formatting
         with open(filename, 'w') as f:
             json.dump(rsvps, f, indent=2)
-        
+
+        print(f"Saved RSVP to {filename}")
         return True
+
     except Exception as e:
-        print(f"Error saving to file: {e}")
+        print(f"Error saving to JSON: {e}")
         return False
 
 @app.route('/api/rsvp', methods=['POST'])
@@ -109,7 +96,7 @@ def handle_rsvp():
     try:
         # Get form data
         data = request.get_json()
-        
+
         # Validate required fields
         required_fields = ['fullName', 'email', 'phone', 'attending', 'afterparty', 'dietary']
         for field in required_fields:
@@ -118,28 +105,29 @@ def handle_rsvp():
                     'success': False,
                     'message': f'Missing required field: {field}'
                 }), 400
-        
+
         # Add timestamp if not provided
         if 'timestamp' not in data:
             data['timestamp'] = datetime.now().isoformat()
-        
-        # Send email
-        email_sent = send_email(data)
-        
-        # Save to file
-        file_saved = save_to_file(data)
-        
-        if email_sent or file_saved:
+
+        # Save to JSON file (primary storage)
+        json_saved = save_to_json(data)
+
+        # Send email notification
+        email_sent = send_email_via_mail(data)
+
+        if json_saved:
             return jsonify({
                 'success': True,
-                'message': 'RSVP submitted successfully'
+                'message': 'RSVP submitted successfully',
+                'email_sent': email_sent
             }), 200
         else:
             return jsonify({
                 'success': False,
-                'message': 'Error processing RSVP'
+                'message': 'Error saving RSVP'
             }), 500
-            
+
     except Exception as e:
         print(f"Error processing RSVP: {e}")
         return jsonify({
@@ -155,6 +143,31 @@ def health_check():
         'status': 'ok',
         'message': 'Server is running'
     }), 200
+
+@app.route('/api/rsvps', methods=['GET'])
+def get_rsvps():
+    """Get all RSVPs (optional - for viewing submissions)"""
+    try:
+        filename = 'rsvps.json'
+        if os.path.exists(filename):
+            with open(filename, 'r') as f:
+                rsvps = json.load(f)
+            return jsonify({
+                'success': True,
+                'count': len(rsvps),
+                'rsvps': rsvps
+            }), 200
+        else:
+            return jsonify({
+                'success': True,
+                'count': 0,
+                'rsvps': []
+            }), 200
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
 
 if __name__ == '__main__':
     port = int(os.getenv('PORT', 3000))
