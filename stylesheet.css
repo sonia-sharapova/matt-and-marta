@@ -385,13 +385,21 @@ nav ul li.rsvp-link:hover {
         right: 0;
         max-width: 260px;
     }
-
-
 }
 
 @media (max-width: 600px) {
 
     .home-photo {
         width: 200px;
+    }
+}
+@media (max-width: 480px) {
+    nav ul {
+        margin-left: 20%;
+
+    }
+
+    .home-photo {
+        width: 180px;
     }
 }
