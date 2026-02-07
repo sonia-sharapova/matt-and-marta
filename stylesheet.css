@@ -353,9 +353,15 @@ nav ul li.rsvp-link:hover {
 
 
 
-@media (max-width: 1000px) {
+@media (max-width: 800px) {
 
 
+    .logo {
+        margin: 10px 30px;
+        width: 55px;
+        position: absolute;
+        padding-bottom: 20px;
+    }
 
     .content {
         margin: 0 auto;
@@ -365,10 +371,9 @@ nav ul li.rsvp-link:hover {
         margin: 30px 40px;
     }
     .back {
-        position: absolute;
-        left: 100px;
-        top: 90px;
+        display: none;
     }
+
 
     nav ul {
         margin-left: 0;
@@ -380,7 +385,7 @@ nav ul li.rsvp-link:hover {
     }
 
     .page-title {
-        margin: 100px 0 10px 12%;
+        margin: 100px 0 10px 100px;
     }
 
     nav ul {
@@ -390,12 +395,6 @@ nav ul li.rsvp-link:hover {
 
     .section #our-story {
         max-width: 80%;
-    }
-
-    .back {
-        top: 50px;
-        right: 0;
-        float: left;
     }
 
 
@@ -411,6 +410,10 @@ nav ul li.rsvp-link:hover {
     .container {
         width: 100%;
     }
+
+    .page-title {
+        margin-left: 100px;
+    }
     .section {
         margin: 30px 20px;
     }
@@ -421,12 +424,27 @@ nav ul li.rsvp-link:hover {
 }
 @media (max-width: 550px) {
 
+    .logo {
+        margin: 5px 15px;
+
+
+    }
+
     .container {
         width: 90%;
     }
 
+    .back {
+        top: 80px;
+    }
+
     .site-title {
         font-size: 30px;
+    }
+
+    .page-title {
+        margin-left: 80px;
+        line-height: 40px;
     }
 
     nav ul li.rsvp-link {
