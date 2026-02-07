@@ -394,6 +394,11 @@ nav ul li.rsvp-link:hover {
     }
 }
 @media (max-width: 480px) {
+
+    .container {
+        width: 100%;
+        padding: 50px 30px 20px 5%;
+    }
     nav ul {
         margin-left: 20%;
 
