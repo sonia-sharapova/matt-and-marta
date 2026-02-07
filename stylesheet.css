@@ -355,12 +355,35 @@ nav ul li.rsvp-link:hover {
 
 @media (max-width: 1000px) {
 
+
     .container {
-        max-width: 90%;
+        width: 100%;
+        padding: 50px 30px 20px 10%;
+    }
+    .content {
+        margin: 0 auto;
+        padding: 0;
+    }
+    .section {
+        margin: 30px 40px;
+    }
+    .back {
+        position: absolute;
+        left: 100px;
+        top: 90px;
+    }
+
+    nav ul {
+        margin-left: 0;
+
     }
 
     .site-title {
         margin: 0 auto;
+    }
+
+    .page-title {
+        margin: 100px 0 10px 12%;
     }
 
     nav ul {
@@ -388,29 +411,7 @@ nav ul li.rsvp-link:hover {
 }
 
 @media (max-width: 600px) {
-
-    .container {
-        width: 100%;
-        padding: 50px 30px 20px 5%;
-    }
-    .content {
-        margin: 0 auto;
-        padding: 0;
-    }
-    .section {
-        margin: 20px 40px;
-    }
-    .back {
-        position: absolute;
-        left: 100px;
-        top: 80px;
-    }
-
-    nav ul {
-        margin-left: 0;
-
-    }
-
+    
     .home-photo {
         width: 180px;
     }
