@@ -418,6 +418,11 @@ nav ul li.rsvp-link:hover {
         margin: 30px 20px;
     }
 
+    nav ul {
+        list-style: none;
+        margin: 15% 0 0 40%;
+    }
+
     .home-photo {
         width: 180px;
     }
