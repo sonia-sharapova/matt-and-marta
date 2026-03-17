@@ -422,26 +422,3 @@ nav ul li.rsvp-link:hover {
         width: 180px;
     }
 }
-@media (max-width: 550px) {
-
-    nav ul {
-        margin-left: 0;
-    }
-
-    /* Center the photo below nav */
-    .home-content {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        width: 100%;
-    }
-
-    .home-photo {
-        position: relative; /* Remove absolute positioning */
-        display: block;
-        margin: 0 auto;
-        width: 60%;
-        max-width: 250px;
-        filter: drop-shadow(8px 8px 5px #b0b0b0);
-    }
-}
