@@ -420,7 +420,7 @@ nav ul li.rsvp-link:hover {
 
     nav ul {
         list-style: none;
-        margin: 15% 0 0 40%;
+        margin: 15% 0 0 0;
     }
 
     .home-photo {
