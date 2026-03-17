@@ -428,6 +428,14 @@ nav ul li.rsvp-link:hover {
         margin-left: 0;
     }
 
+    /* Center the photo below nav */
+    .home-content {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+    }
+
     .home-photo {
         position: relative; /* Remove absolute positioning */
         display: block;
