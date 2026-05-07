@@ -50,6 +50,13 @@ body {
     text-align: left;
 }
 
+.site-title-img {
+    max-width: 320px;
+    width: 80%;
+    display: block;
+    margin-bottom: 10px;
+}
+
 /* Navigation */
 nav {
     margin: 0;
