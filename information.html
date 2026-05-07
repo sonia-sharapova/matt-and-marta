@@ -5,11 +5,105 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Wedding - Marta & Matt</title>
     <link rel="stylesheet" href="stylesheet.css">
+    <style>
+        /* Address picker */
+        .address-wrapper {
+            position: relative;
+            display: inline;
+        }
+        .address-link {
+            color: #000;
+            text-decoration: underline;
+            cursor: pointer;
+            background: none;
+            border: none;
+            font-family: inherit;
+            font-size: inherit;
+            padding: 0;
+        }
+        .address-menu {
+            display: none;
+            position: absolute;
+            left: 0;
+            top: 1.4em;
+            background: #fff;
+            border: 1px solid #ccc;
+            z-index: 100;
+            min-width: 200px;
+            box-shadow: 2px 2px 8px rgba(0,0,0,0.08);
+        }
+        .address-menu.open { display: block; }
+        .address-menu a,
+        .address-menu button {
+            display: block;
+            width: 100%;
+            text-align: left;
+            padding: 10px 16px;
+            font-family: 'Rosarivo', serif;
+            font-size: 12px;
+            letter-spacing: 0.05em;
+            color: #000;
+            text-decoration: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            border-bottom: 1px solid #eee;
+        }
+        .address-menu a:last-child,
+        .address-menu button:last-child { border-bottom: none; }
+        .address-menu a:hover,
+        .address-menu button:hover { background: #f5f3f0; }
+        .copy-confirm {
+            font-style: italic;
+            color: #888;
+            font-size: 11px;
+            padding: 6px 16px;
+            display: none;
+        }
+
+        /* Slideshow */
+        .slideshow-outer {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 16px 0 24px 0;
+            max-width: 420px;
+        }
+        .slideshow-viewport {
+            flex: 1;
+            overflow: hidden;
+            max-height: 320px;
+        }
+        .slideshow-track {
+            display: flex;
+            transition: transform 0.5s ease;
+        }
+        .slideshow-track img {
+            flex-shrink: 0;
+            width: 100%;
+            max-height: 320px;
+            object-fit: contain;
+            filter: drop-shadow(4px 4px 4px #b0b0b0);
+            display: block;
+        }
+        .slideshow-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+            color: #555;
+            padding: 4px 2px;
+            font-family: 'Rosarivo', serif;
+            flex-shrink: 0;
+            line-height: 1;
+        }
+        .slideshow-btn:hover { color: #000; }
+    </style>
 </head>
 <body>
     <div class="container">
         <a href="index.html">
-            <img src="us.png" alt="Marta and Matt" class="logo">
+            <img src="images/us.png" alt="Marta and Matt" class="logo">
         </a>
         <h1 class="page-title">the wedding</h1>
         <div class="back">
@@ -18,36 +112,149 @@
             </ul>
         </div>
         <div class="content">
+
             <div class="section">
-                <p>Marta Ilyinichna Sharapova & Matthew William Francescani</p>
+                <p style="margin-bottom: 10px;">Marta Ilyinichna Sharapova &amp; Matthew William Francescani</p>
                 <p><strong>Wedding Date:</strong> Sunday, August 23, 2026</p>
-                <p><strong>Venue Address:</strong> Blooming Hill Farm, 1251 State Route 208, Monroe, NY 10950</p>
+                <p style="margin-bottom: 14px;"><strong>Venue:</strong>
+                    <span class="address-wrapper">
+                        <button class="address-link" onclick="toggleAddressMenu(event)">Blooming Hill Farm, 1251 State Route 208, Monroe, NY 10950</button>
+                        <div class="address-menu" id="address-menu">
+                            <a href="https://maps.apple.com/?q=Blooming+Hill+Farm,+1251+State+Route+208,+Monroe,+NY+10950" target="_blank">Open in Apple Maps</a>
+                            <a href="https://www.google.com/maps/search/?api=1&query=Blooming+Hill+Farm,+1251+State+Route+208,+Monroe,+NY+10950" target="_blank">Open in Google Maps</a>
+                            <button onclick="copyAddress()">Copy Address</button>
+                            <span class="copy-confirm" id="copy-confirm">Copied!</span>
+                        </div>
+                    </span>
+                </p>
+
                 <div class="schedule">
                     <ul>
-                    <li><strong style="font-size: 12px">Schedule:</strong></li>
-                    <li>4:00 pm – Ceremony</li>
-                    <li>4:30 pm – Cocktail Hour</li>
-                    <li>5:30 pm – Reception</li>
-                    <li>10:00 pm – Event Concludes / Shuttles to Beacon Depart</li>
-                    <li>10:30 pm – Afterparty Begins</li>
+                        <li><strong style="font-size: 12px;">Schedule:</strong></li>
+                        <li>4:00 pm – Ceremony</li>
+                        <li>4:30 pm – Cocktail Hour</li>
+                        <li>5:30 pm – Reception</li>
+                        <li>10:00 pm – Event Concludes / Shuttles to Beacon Depart</li>
+                        <li>10:30 pm – Afterparty Begins</li>
+                        <li>1:30 am – Afterparty Ends</li>
                     </ul>
                 </div>
-                <p style="font-family: 'Sorts Mill Goudy', serif; font-style: italic; font-size: 14px">Please arrive between 3:45–4:00 pm</p>
 
+                <p class="italic-note" style="margin-top: 16px;">Guests must arrive at the venue between 3:45 &amp; 4:00 pm. More information about accessing the venue can be found on the <a href="transportation.html" style="color: inherit; text-decoration: underline; font-weight: bold;">transportation</a> page.</p>
             </div>
 
-            <div class="section" id="our-story">
+            <div class="section" id="our-story" style="margin-top: 40px;">
                 <h2 class="section-title">Our Story</h2>
-                <p style="margin-bottom: 25px">Both freshmen attending Pratt Institute, we started dating in the early spring of 2018. It was a rather ordinary college relationship; mutual friends, parties, studying, going on dates, meeting the parents. Neither of us was particularly conscious of the fact that we were still just kids, growing up alongside one another, our respective identities vibrating into existence.</p>
-                <p>For years we floated between our two apartments and basked in the company of friends. Time only deepened our love and admiration for one another. In 2024, we finally resolved to tear ourselves away from the sitcom-esque bliss of roommates and move in together. On September 15th of 2025, in a cabin overlooking the Delaware River at Hawk's Nest, Matt proposed and Marta accepted. We are still the same kids we were 8 years ago and every day we fall in love all over again.</p>
+
+                <div class="slideshow-outer">
+                    <button class="slideshow-btn" onclick="slide(-1)">&#8592;</button>
+                    <div class="slideshow-viewport">
+                        <div class="slideshow-track" id="slideshow-track">
+                            <img src="images/slideshow/img.png" alt="">
+                            <img src="images/slideshow/img2.png" alt="">
+                            <img src="images/slideshow/IMG_0536.jpg" alt="">
+                            <img src="images/slideshow/IMG_0539.jpg" alt="">
+                            <img src="images/slideshow/IMG_0540.jpg" alt="">
+                            <img src="images/slideshow/IMG_1643.jpg" alt="">
+                            <img src="images/slideshow/IMG_3191.jpg" alt="">
+                            <img src="images/slideshow/IMG_4087.JPG" alt="">
+                            <img src="images/slideshow/IMG_7275.jpg" alt="">
+                            <img src="images/slideshow/IMG_8438.JPG" alt="">
+                            <img src="images/slideshow/IMG_9343.JPG" alt="">
+                            <img src="images/slideshow/27454123-C273-4759-AFE1-960AF5E6CE4F.JPG" alt="">
+                            <img src="images/slideshow/3296D2B1-AFDD-489C-A25F-2DCDA6F613EA.JPG" alt="">
+                            <img src="images/slideshow/4361CED7-2219-40AE-87A0-07EDA8BE336A.JPG" alt="">
+                        </div>
+                    </div>
+                    <button class="slideshow-btn" onclick="slide(1)">&#8594;</button>
+                </div>
+
+                <p style="margin-bottom: 20px; margin-top: 8px;">Both freshmen attending Pratt Institute, we started dating in the early spring of 2018. It was a rather ordinary college relationship; mutual friends, parties, studying, going on dates, meeting the parents. Neither of us was particularly conscious of the fact that we were still just kids, growing up alongside one another, our respective identities vibrating into existence.</p>
+                <p>For years we floated between our two apartments and basked in the company of friends. Time only deepened our love and admiration for one another. In 2024, we finally resolved to tear ourselves away from the sitcom-esque bliss of roommates and move in together. On September 12th of 2025, in a cabin overlooking the Delaware River at Hawk's Nest, Matt proposed and Marta accepted. We are still the same kids we were 8 years ago and every day we fall in love all over again.</p>
             </div>
 
-            <div class="section">
+            <div class="section" style="margin-top: 40px;">
                 <h2 class="section-title">The Wedding Party</h2>
-                <p style="font-style: italic;">(work in progress)</p>
+                <div class="info-list" style="margin-top: 16px;">
+                    <ul>
+                        <li>
+                            <h3>The Maid of Honor</h3>
+                            <p>Peyton Barnes</p>
+                        </li>
+                        <li>
+                            <h3>The Best Man</h3>
+                            <p>Ben Raggio</p>
+                        </li>
+                        <li>
+                            <h3>The Bridesmaids</h3>
+                            <p>
+                                Sonia Sharapova<br>
+                                Nina Harold<br>
+                                Yanka Kostova<br>
+                                Molly Wasilewski<br>
+                                Shae Sennett<br>
+                                Emma Broadbent
+                            </p>
+                        </li>
+                        <li>
+                            <h3>The Groomsmen</h3>
+                            <p>
+                                Will Smith<br>
+                                Thos Brown<br>
+                                Jon Luo<br>
+                                Tyler Marelli<br>
+                                Drew Hannoui<br>
+                                Trevor Rivkin<br>
+                                Andy Conte
+                            </p>
+                        </li>
+                    </ul>
+                </div>
             </div>
+
         </div>
     </div>
+
+    <script>
+        // Address menu
+        function toggleAddressMenu(e) {
+            e.stopPropagation();
+            document.getElementById('address-menu').classList.toggle('open');
+        }
+        function copyAddress() {
+            navigator.clipboard.writeText('Blooming Hill Farm, 1251 State Route 208, Monroe, NY 10950').then(function() {
+                var c = document.getElementById('copy-confirm');
+                c.style.display = 'block';
+                setTimeout(function() { c.style.display = 'none'; }, 2000);
+            });
+        }
+        document.addEventListener('click', function() {
+            document.getElementById('address-menu').classList.remove('open');
+        });
+
+        // Slideshow
+        var current = 0;
+        var total = document.querySelectorAll('#slideshow-track img').length;
+        var autoplay;
+
+        function goTo(n) {
+            current = (n + total) % total;
+            document.getElementById('slideshow-track').style.transform = 'translateX(-' + (current * 100) + '%)';
+        }
+
+        function slide(dir) {
+            goTo(current + dir);
+            resetAutoplay();
+        }
+
+        function resetAutoplay() {
+            clearInterval(autoplay);
+            autoplay = setInterval(function() { goTo(current + 1); }, 4000);
+        }
+
+        goTo(0);
+        resetAutoplay();
+    </script>
 <script src="password.js"></script>
 </body>
 </html>
