@@ -105,6 +105,7 @@
                 <p style="margin-bottom: 12px; font-size: 14px;">Thank you so much for your RSVP!</p>
                 <p style="font-size: 12px; letter-spacing: 0.03em; color: rgba(49,49,49,0.7);">Please reach out to us directly at <a href="tel:+14088130951" class="phone-link">(408) 813-0951</a> if you have any questions, concerns or requests.</p>
                 <button class="download-btn" onclick="downloadCard()">Save your RSVP</button>
+                <button class="download-btn" onclick="resetForm()" style="margin-top: 10px;">Submit another RSVP</button>
             </div>
 
             <form class="rsvp-form" id="rsvpForm">
@@ -259,6 +260,16 @@
             link.href = canvas.toDataURL('image/png');
             link.click();
         });
+    }
+
+    function resetForm() {
+        document.getElementById('rsvpForm').reset();
+        document.getElementById('attending-yes-fields').style.display = 'none';
+        document.getElementById('afterparty').required = false;
+        document.getElementById('meal').required = false;
+        document.getElementById('successMessage').style.display = 'none';
+        document.getElementById('rsvpForm').style.display = 'block';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     const SERVER_ENDPOINT = 'https://matt-and-marta.com/api/rsvp';
