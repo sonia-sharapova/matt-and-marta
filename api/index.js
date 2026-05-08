@@ -128,7 +128,7 @@ app.post('/api/rsvp', async (req, res) => {
 
 app.post('/api/rsvp/confirm', async (req, res) => {
     try {
-        const { email, name, cardImage } = req.body;
+        const { email, name, cardImage, rsvpData } = req.body;
         if (!email || !cardImage) return res.status(400).json({ error: 'Missing fields' });
 
         const base64Data = cardImage.replace(/^data:image\/png;base64,/, '');
@@ -158,6 +158,25 @@ app.post('/api/rsvp/confirm', async (req, res) => {
         });
 
         console.log(`Confirmation sent to ${email}`);
+
+        if (rsvpData) {
+            const owners = ['derpcode01@gmail.com', 'marta.sharapova@gmail.com'];
+            for (const to of owners) {
+                await transporter.sendMail({
+                    from: '"Wedding RSVP" <rsvp@matt-and-marta.com>',
+                    to,
+                    subject: `RSVP Confirmed: ${name}`,
+                    text: `Confirmation email sent to ${email}.`,
+                    attachments: [{
+                        filename: `rsvp-${name.replace(/\s+/g, '-').toLowerCase()}.json`,
+                        content: JSON.stringify(rsvpData, null, 2),
+                        contentType: 'application/json'
+                    }]
+                });
+            }
+            console.log(`JSON confirmation forwarded to owners for ${name}`);
+        }
+
         res.json({ success: true });
     } catch (error) {
         console.error('Error sending confirmation:', error);

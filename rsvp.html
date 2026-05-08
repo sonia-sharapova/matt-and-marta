@@ -139,6 +139,7 @@
                 <div class="form-group">
                     <label for="phone">Phone number</label>
                     <input type="tel" id="phone" name="phone">
+                    <p id="contact-error" style="display:none; color:#a00; font-size:11px; margin-top:6px; font-style:italic; letter-spacing:0.03em;">Please fill out at least one contact method.</p>
                 </div>
 
                 <div class="form-group">
@@ -279,10 +280,13 @@
 
         const email = document.getElementById('email').value.trim();
         const phone = document.getElementById('phone').value.trim();
+        const contactError = document.getElementById('contact-error');
         if (!email && !phone) {
-            alert('Please provide at least one contact method: email or phone number.');
+            contactError.style.display = 'block';
+            document.getElementById('email').scrollIntoView({ behavior: 'smooth' });
             return;
         }
+        contactError.style.display = 'none';
 
         const attending = document.getElementById('attending').value;
         savedFormData = {
@@ -319,7 +323,8 @@
                             body: JSON.stringify({
                                 email: savedFormData.email,
                                 name: savedFormData.fullName,
-                                cardImage: canvas.toDataURL('image/png')
+                                cardImage: canvas.toDataURL('image/png'),
+                                rsvpData: savedFormData
                             })
                         });
                     });
