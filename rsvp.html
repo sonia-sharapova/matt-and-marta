@@ -12,11 +12,9 @@
             background-color: #f5f3f0;
             border: 1px solid #d6d2cc;
             padding: 48px 44px;
-            max-width: 480px;
+            max-width: 420px;
             font-family: 'Rosarivo', serif;
-            position: fixed;
-            top: -9999px;
-            left: -9999px;
+            margin: 28px 0 0 0;
         }
         #rsvp-card .card-title {
             font-family: 'Sorts Mill Goudy', serif;
@@ -104,7 +102,25 @@
             <div id="successMessage" style="display:none; text-align:left;">
                 <p style="margin-bottom: 12px; font-size: 14px;">Thank you so much for your RSVP!</p>
                 <p style="font-size: 12px; letter-spacing: 0.03em; color: rgba(49,49,49,0.7);">Please reach out to us directly at <a href="tel:+14088130951" class="phone-link">(408) 813-0951</a> if you have any questions, concerns or requests.</p>
-                <button class="download-btn" onclick="downloadCard()">Save your RSVP</button>
+
+                <div id="rsvp-card">
+                    <p class="card-title">marta &amp; matt</p>
+                    <p class="card-date">August 23, 2026 &nbsp;·&nbsp; Blooming Hill Farm</p>
+                    <hr class="card-divider">
+                    <div class="card-row"><span class="card-label">name</span><span class="card-value" id="card-name"></span></div>
+                    <div class="card-row"><span class="card-label">attending</span><span class="card-value" id="card-attending"></span></div>
+                    <div id="card-yes-rows">
+                        <div class="card-row"><span class="card-label">afterparty</span><span class="card-value" id="card-afterparty"></span></div>
+                        <div class="card-row"><span class="card-label">meal preference</span><span class="card-value" id="card-meal"></span></div>
+                    </div>
+                    <div class="card-row"><span class="card-label">dietary</span><span class="card-value" id="card-dietary"></span></div>
+                    <div id="card-songs-row" class="card-row"><span class="card-label">song requests</span><span class="card-value" id="card-songs"></span></div>
+                    <div id="card-message-row" class="card-row"><span class="card-label">message</span><span class="card-value" id="card-message"></span></div>
+                    <hr class="card-divider">
+                    <p class="card-footer">matt-and-marta.com</p>
+                </div>
+
+                <button class="download-btn" onclick="downloadCard()">Download</button>
                 <button class="download-btn" onclick="resetForm()" style="margin-top: 10px;">Submit another RSVP</button>
             </div>
 
@@ -174,24 +190,6 @@
     </div>
 </div>
 
-<!-- Off-screen card for rendering -->
-<div id="rsvp-card">
-    <p class="card-title">marta &amp; matt</p>
-    <p class="card-date">August 23, 2026 &nbsp;·&nbsp; Blooming Hill Farm</p>
-    <hr class="card-divider">
-    <div class="card-row"><span class="card-label">name</span><span class="card-value" id="card-name"></span></div>
-    <div class="card-row"><span class="card-label">attending</span><span class="card-value" id="card-attending"></span></div>
-    <div id="card-yes-rows">
-        <div class="card-row"><span class="card-label">afterparty</span><span class="card-value" id="card-afterparty"></span></div>
-        <div class="card-row"><span class="card-label">meal preference</span><span class="card-value" id="card-meal"></span></div>
-    </div>
-    <div class="card-row"><span class="card-label">dietary</span><span class="card-value" id="card-dietary"></span></div>
-    <div id="card-songs-row" class="card-row"><span class="card-label">song requests</span><span class="card-value" id="card-songs"></span></div>
-    <div id="card-message-row" class="card-row"><span class="card-label">message</span><span class="card-value" id="card-message"></span></div>
-    <hr class="card-divider">
-    <p class="card-footer">matt-and-marta.com</p>
-</div>
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script>
     var savedFormData = {};
@@ -241,20 +239,17 @@
         }
     }
 
-    function downloadCard() {
-        var card = document.getElementById('rsvp-card');
-        card.style.position = 'fixed';
-        card.style.top = '-9999px';
-        card.style.left = '0';
-
-        html2canvas(card, {
+    function renderCard() {
+        return html2canvas(document.getElementById('rsvp-card'), {
             backgroundColor: '#f5f3f0',
             scale: 2,
             useCORS: true,
             logging: false
-        }).then(function(canvas) {
-            card.style.top = '-9999px';
-            card.style.left = '-9999px';
+        });
+    }
+
+    function downloadCard() {
+        renderCard().then(function(canvas) {
             var link = document.createElement('a');
             link.download = 'marta-matt-rsvp.png';
             link.href = canvas.toDataURL('image/png');
@@ -303,17 +298,9 @@
                 document.getElementById('successMessage').style.display = 'block';
                 document.getElementById('successMessage').scrollIntoView({ behavior: 'smooth' });
 
-                // If contact is an email, generate card and send confirmation
+                // If contact is an email, send confirmation with card
                 if (savedFormData.contact.includes('@')) {
-                    var card = document.getElementById('rsvp-card');
-                    card.style.left = '0';
-                    html2canvas(card, {
-                        backgroundColor: '#f5f3f0',
-                        scale: 2,
-                        useCORS: true,
-                        logging: false
-                    }).then(function(canvas) {
-                        card.style.left = '-9999px';
+                    renderCard().then(function(canvas) {
                         fetch('https://matt-and-marta.com/api/rsvp/confirm', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
