@@ -74,7 +74,7 @@ Song Requests: ${rsvp.songs || '—'}
 Message: ${rsvp.message || '—'}
     `.trim();
 
-    const recipients = ['sonia.sharapova@yahoo.com', 'marta.sharapova@gmail.com'];
+    const recipients = ['derpcode01@gmail.com', 'marta.sharapova@gmail.com'];
 
     try {
         for (const to of recipients) {
