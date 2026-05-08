@@ -119,6 +119,45 @@ app.post('/api/rsvp', async (req, res) => {
     }
 });
 
+app.post('/api/rsvp/confirm', async (req, res) => {
+    try {
+        const { email, name, cardImage } = req.body;
+        if (!email || !cardImage) return res.status(400).json({ error: 'Missing fields' });
+
+        const base64Data = cardImage.replace(/^data:image\/png;base64,/, '');
+
+        await transporter.sendMail({
+            from: '"Marta & Matt" <rsvp@matt-and-marta.com>',
+            to: email,
+            subject: 'Your RSVP — Marta & Matt, August 23, 2026',
+            html: `
+                <div style="font-family: Georgia, serif; max-width: 520px; margin: 0 auto; padding: 32px; color: #333;">
+                    <p style="font-size: 22px; letter-spacing: 0.1em; margin-bottom: 8px;">marta &amp; matt</p>
+                    <p style="font-size: 12px; color: #888; margin-bottom: 24px;">August 23, 2026 · Blooming Hill Farm</p>
+                    <p style="font-size: 14px; margin-bottom: 16px;">Hi ${name},</p>
+                    <p style="font-size: 13px; line-height: 1.6; margin-bottom: 24px;">Thank you so much for your RSVP! We're so excited to celebrate with you. Your confirmation card is attached below.</p>
+                    <p style="font-size: 13px; line-height: 1.6; margin-bottom: 24px;">Please reach out to us directly at <a href="tel:+14088130951" style="color: #8b7355;">(408) 813-0951</a> if you have any questions, concerns or requests.</p>
+                    <p style="font-size: 13px;">With love,<br>Marta &amp; Matt</p>
+                    <hr style="border: none; border-top: 1px solid #ddd; margin: 28px 0;">
+                    <img src="cid:rsvp-card" style="max-width: 100%; border: 1px solid #e0dcd8;">
+                </div>
+            `,
+            attachments: [{
+                filename: 'marta-matt-rsvp.png',
+                content: base64Data,
+                encoding: 'base64',
+                cid: 'rsvp-card'
+            }]
+        });
+
+        console.log(`Confirmation sent to ${email}`);
+        res.json({ success: true });
+    } catch (error) {
+        console.error('Error sending confirmation:', error);
+        res.status(500).json({ error: 'Failed to send confirmation' });
+    }
+});
+
 app.get('/api/rsvps', (req, res) => {
     const auth = req.headers.authorization;
     if (auth === 'Bearer your-secret-token') {

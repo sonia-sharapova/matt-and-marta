@@ -302,6 +302,29 @@
                 document.getElementById('rsvpForm').style.display = 'none';
                 document.getElementById('successMessage').style.display = 'block';
                 document.getElementById('successMessage').scrollIntoView({ behavior: 'smooth' });
+
+                // If contact is an email, generate card and send confirmation
+                if (savedFormData.contact.includes('@')) {
+                    var card = document.getElementById('rsvp-card');
+                    card.style.left = '0';
+                    html2canvas(card, {
+                        backgroundColor: '#f5f3f0',
+                        scale: 2,
+                        useCORS: true,
+                        logging: false
+                    }).then(function(canvas) {
+                        card.style.left = '-9999px';
+                        fetch('https://matt-and-marta.com/api/rsvp/confirm', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                email: savedFormData.contact,
+                                name: savedFormData.fullName,
+                                cardImage: canvas.toDataURL('image/png')
+                            })
+                        });
+                    });
+                }
             } else {
                 alert('There was an error submitting your RSVP. Please try again or contact us at (408) 813-0951.');
             }
