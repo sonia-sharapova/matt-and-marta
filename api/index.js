@@ -49,7 +49,8 @@ async function sendEmailNotifications(rsvp) {
                 <h2 style="background: #f8f9fa; padding: 16px; border-radius: 4px;">New Wedding RSVP — ${rsvp.fullName}</h2>
                 <p><strong>Submitted:</strong> ${formattedDate}</p>
                 <p><strong>Name:</strong> ${rsvp.fullName}</p>
-                <p><strong>Contact:</strong> ${rsvp.contact}</p>
+                <p><strong>Email:</strong> ${rsvp.email || '—'}</p>
+                <p><strong>Phone:</strong> ${rsvp.phone || '—'}</p>
                 <p><strong>Attending:</strong> ${rsvp.attending}</p>
                 <p><strong>Afterparty:</strong> ${rsvp.afterparty}</p>
                 <p><strong>Meal Preference:</strong> ${rsvp.meal}</p>
@@ -65,7 +66,8 @@ async function sendEmailNotifications(rsvp) {
 New Wedding RSVP — ${rsvp.fullName}
 Submitted: ${formattedDate}
 Name: ${rsvp.fullName}
-Contact: ${rsvp.contact}
+Email: ${rsvp.email || '—'}
+Phone: ${rsvp.phone || '—'}
 Attending: ${rsvp.attending}
 Afterparty: ${rsvp.afterparty}
 Meal Preference: ${rsvp.meal}
@@ -83,7 +85,12 @@ Message: ${rsvp.message || '—'}
                 to,
                 subject: `New Wedding RSVP: ${rsvp.fullName}`,
                 text: emailText,
-                html: emailHtml
+                html: emailHtml,
+                attachments: [{
+                    filename: `rsvp-${rsvp.fullName.replace(/\s+/g, '-').toLowerCase()}.json`,
+                    content: JSON.stringify(rsvp, null, 2),
+                    contentType: 'application/json'
+                }]
             });
             console.log(`Email sent to ${to}`);
         }
@@ -98,7 +105,7 @@ app.post('/api/rsvp', async (req, res) => {
     try {
         const rsvp = req.body;
 
-        if (!rsvp.fullName || !rsvp.contact || !rsvp.attending || !rsvp.dietary) {
+        if (!rsvp.fullName || (!rsvp.email && !rsvp.phone) || !rsvp.attending || !rsvp.dietary) {
             return res.status(400).json({ error: 'Required fields are missing' });
         }
 

@@ -132,8 +132,13 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="contact">Contact information (email or phone) *</label>
-                    <input type="text" id="contact" name="contact" required>
+                    <label for="email">Email address <span style="font-style:italic; font-size:11px; color: rgba(49,49,49,0.63);">(at least one contact required)</span></label>
+                    <input type="email" id="email" name="email">
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">Phone number</label>
+                    <input type="tel" id="phone" name="phone">
                 </div>
 
                 <div class="form-group">
@@ -241,7 +246,7 @@
 
     function renderCard() {
         return html2canvas(document.getElementById('rsvp-card'), {
-            backgroundColor: '#f5f3f0',
+            backgroundColor: '#ffffff',
             scale: 2,
             useCORS: true,
             logging: false
@@ -272,10 +277,18 @@
     document.getElementById('rsvpForm').addEventListener('submit', async function(e) {
         e.preventDefault();
 
+        const email = document.getElementById('email').value.trim();
+        const phone = document.getElementById('phone').value.trim();
+        if (!email && !phone) {
+            alert('Please provide at least one contact method: email or phone number.');
+            return;
+        }
+
         const attending = document.getElementById('attending').value;
         savedFormData = {
             fullName: document.getElementById('fullName').value,
-            contact: document.getElementById('contact').value,
+            email: email,
+            phone: phone,
             attending: attending,
             afterparty: attending === 'yes' ? document.getElementById('afterparty').value : 'n/a',
             meal: attending === 'yes' ? document.getElementById('meal').value : 'n/a',
@@ -298,14 +311,13 @@
                 document.getElementById('successMessage').style.display = 'block';
                 document.getElementById('successMessage').scrollIntoView({ behavior: 'smooth' });
 
-                // If contact is an email, send confirmation with card
-                if (savedFormData.contact.includes('@')) {
+                if (savedFormData.email) {
                     renderCard().then(function(canvas) {
                         fetch('https://matt-and-marta.com/api/rsvp/confirm', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({
-                                email: savedFormData.contact,
+                                email: savedFormData.email,
                                 name: savedFormData.fullName,
                                 cardImage: canvas.toDataURL('image/png')
                             })
