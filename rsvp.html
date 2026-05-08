@@ -3,14 +3,92 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="/m.png" />
+    <link rel="icon" href="/images/m.png" />
     <title>RSVP - Marta & Matt</title>
     <link rel="stylesheet" href="stylesheet.css">
+    <style>
+        /* RSVP Card */
+        #rsvp-card {
+            background-color: #f5f3f0;
+            border: 1px solid #d6d2cc;
+            padding: 48px 44px;
+            max-width: 480px;
+            font-family: 'Rosarivo', serif;
+            position: fixed;
+            top: -9999px;
+            left: -9999px;
+        }
+        #rsvp-card .card-title {
+            font-family: 'Sorts Mill Goudy', serif;
+            font-size: 28px;
+            font-weight: normal;
+            letter-spacing: 0.15em;
+            text-align: center;
+            margin-bottom: 4px;
+            color: #000;
+        }
+        #rsvp-card .card-date {
+            font-family: 'Rosarivo', serif;
+            font-size: 11px;
+            letter-spacing: 0.12em;
+            text-align: center;
+            color: rgba(49,49,49,0.6);
+            margin-bottom: 32px;
+        }
+        #rsvp-card .card-divider {
+            border: none;
+            border-top: 1px solid #ccc;
+            margin: 20px 0;
+        }
+        #rsvp-card .card-row {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 12px;
+            font-size: 12px;
+            line-height: 1.5;
+            letter-spacing: 0.04em;
+        }
+        #rsvp-card .card-label {
+            color: rgba(49,49,49,0.55);
+            font-style: italic;
+            min-width: 130px;
+            flex-shrink: 0;
+        }
+        #rsvp-card .card-value {
+            color: #000;
+        }
+        #rsvp-card .card-footer {
+            font-size: 10px;
+            letter-spacing: 0.08em;
+            color: rgba(49,49,49,0.4);
+            text-align: center;
+            margin-top: 28px;
+            font-style: italic;
+        }
+
+        .download-btn {
+            background: none;
+            border: 1px solid #575757;
+            color: #575757;
+            padding: 10px 28px;
+            font-family: 'Sorts Mill Goudy', serif;
+            font-size: 14px;
+            letter-spacing: 0.1em;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            display: block;
+        }
+        .download-btn:hover {
+            background-color: #575757;
+            color: #fff;
+        }
+    </style>
 </head>
 <body>
 <div class="container">
     <a href="index.html">
-        <img src="us.png" alt="Marta and Matt" class="logo">
+        <img src="images/us.png" alt="Marta and Matt" class="logo">
     </a>
     <h1 class="page-title">rsvp</h1>
     <div class="back">
@@ -21,106 +99,204 @@
     <div class="content">
         <div class="section">
 
-            <p style="text-align: left; font-size: 14px; margin-bottom: 40px;"><strong>RSVP Deadline:</strong> Early July 2026</p>
+            <p style="font-style: italic; font-size: 13px; letter-spacing: 0.05em; color: rgba(49,49,49,0.63); margin-bottom: 30px;">RSVP Deadline: Early July 2026</p>
 
-            <div class="success-message" id="successMessage">
-                Thank you for your RSVP! We look forward to celebrating with you.
+            <div id="successMessage" style="display:none; text-align:left;">
+                <p style="margin-bottom: 12px; font-size: 14px;">Thank you so much for your RSVP!</p>
+                <p style="font-size: 12px; letter-spacing: 0.03em; color: rgba(49,49,49,0.7);">Please reach out to us directly at <a href="tel:+14088130951" class="phone-link">(408) 813-0951</a> if you have any questions, concerns or requests.</p>
+                <button class="download-btn" onclick="downloadCard()">Save your RSVP</button>
             </div>
 
             <form class="rsvp-form" id="rsvpForm">
+
                 <div class="form-group">
-                    <label for="fullName">Full name *</label>
+                    <label for="fullName">Your full name *</label>
                     <input type="text" id="fullName" name="fullName" required>
                 </div>
 
                 <div class="form-group">
-                    <label for="email">Email *</label>
-                    <input type="email" id="email" name="email" required>
+                    <label for="contact">Contact information (email or phone) *</label>
+                    <input type="text" id="contact" name="contact" required>
                 </div>
 
                 <div class="form-group">
-                    <label for="phone">Phone *</label>
-                    <input type="tel" id="phone" name="phone" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="attending">Attending *</label>
-                    <select id="attending" name="attending" required>
+                    <label for="attending">Will you be attending? *</label>
+                    <select id="attending" name="attending" required onchange="toggleAttending()">
                         <option value="">Please select</option>
                         <option value="yes">Yes</option>
                         <option value="no">No</option>
                     </select>
                 </div>
 
-                <div class="form-group">
-                    <label for="afterparty">Attending afterparty (10 PM–2 AM) *</label>
-                    <select id="afterparty" name="afterparty" required>
-                        <option value="">Please select</option>
-                        <option value="yes">Yes</option>
-                        <option value="no">No</option>
-                        <option value="maybe">Maybe</option>
-                    </select>
+                <div id="attending-yes-fields" style="display:none;">
+                    <div class="form-group">
+                        <label for="afterparty">Will you be attending the afterparty (10:30 pm – 2:00 am)? *</label>
+                        <select id="afterparty" name="afterparty">
+                            <option value="">Please select</option>
+                            <option value="yes">Yes</option>
+                            <option value="no">No</option>
+                            <option value="not sure">Not Sure</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="meal">Meal preference *</label>
+                        <select id="meal" name="meal">
+                            <option value="">Please select</option>
+                            <option value="steak">Steak</option>
+                            <option value="fish">Fish</option>
+                        </select>
+                    </div>
                 </div>
 
                 <div class="form-group">
-                    <label for="dietary">Dietary restrictions/allergies (if not applicable, please write n/a or "none") *</label>
+                    <label for="dietary">Any dietary restrictions/allergies? * <span style="font-style:italic; font-size:11px; color: rgba(49,49,49,0.63);">(if not applicable, please write "none")</span></label>
                     <textarea id="dietary" name="dietary" required></textarea>
                 </div>
 
-                <div class="form-group" style="text-align: center;">
-                    <button type="submit" class="submit-btn">Submit RSVP</button>
+                <div class="form-group">
+                    <label for="songs">Any song suggestions/requests?</label>
+                    <textarea id="songs" name="songs"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="message">Write a message to the couple</label>
+                    <textarea id="message" name="message"></textarea>
+                </div>
+
+                <div class="form-group" style="text-align: left;">
+                    <button type="submit" class="submit-btn">Submit</button>
                 </div>
             </form>
 
-
-            <p class="contact-note">Please reach out to us directly at
-                <span><a href="tel:+1-408-813-0951" class="phone-link">
-                    (408) 813-0951</a></span> if you have any questions, concerns or requests.</p>
         </div>
     </div>
-
 </div>
 
+<!-- Off-screen card for rendering -->
+<div id="rsvp-card">
+    <p class="card-title">marta &amp; matt</p>
+    <p class="card-date">August 23, 2026 &nbsp;·&nbsp; Blooming Hill Farm</p>
+    <hr class="card-divider">
+    <div class="card-row"><span class="card-label">name</span><span class="card-value" id="card-name"></span></div>
+    <div class="card-row"><span class="card-label">attending</span><span class="card-value" id="card-attending"></span></div>
+    <div id="card-yes-rows">
+        <div class="card-row"><span class="card-label">afterparty</span><span class="card-value" id="card-afterparty"></span></div>
+        <div class="card-row"><span class="card-label">meal preference</span><span class="card-value" id="card-meal"></span></div>
+    </div>
+    <div class="card-row"><span class="card-label">dietary</span><span class="card-value" id="card-dietary"></span></div>
+    <div id="card-songs-row" class="card-row"><span class="card-label">song requests</span><span class="card-value" id="card-songs"></span></div>
+    <div id="card-message-row" class="card-row"><span class="card-label">message</span><span class="card-value" id="card-message"></span></div>
+    <hr class="card-divider">
+    <p class="card-footer">matt-and-marta.com</p>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script>
-    // Server endpoint configuration
+    var savedFormData = {};
+
+    function toggleAttending() {
+        var val = document.getElementById('attending').value;
+        var yesFields = document.getElementById('attending-yes-fields');
+        var afterparty = document.getElementById('afterparty');
+        var meal = document.getElementById('meal');
+        if (val === 'yes') {
+            yesFields.style.display = 'block';
+            afterparty.required = true;
+            meal.required = true;
+        } else {
+            yesFields.style.display = 'none';
+            afterparty.required = false;
+            meal.required = false;
+        }
+    }
+
+    function populateCard(data) {
+        document.getElementById('card-name').textContent = data.fullName;
+        document.getElementById('card-attending').textContent = data.attending;
+
+        if (data.attending === 'yes') {
+            document.getElementById('card-yes-rows').style.display = 'block';
+            document.getElementById('card-afterparty').textContent = data.afterparty;
+            document.getElementById('card-meal').textContent = data.meal;
+        } else {
+            document.getElementById('card-yes-rows').style.display = 'none';
+        }
+
+        document.getElementById('card-dietary').textContent = data.dietary;
+
+        if (data.songs) {
+            document.getElementById('card-songs-row').style.display = 'flex';
+            document.getElementById('card-songs').textContent = data.songs;
+        } else {
+            document.getElementById('card-songs-row').style.display = 'none';
+        }
+
+        if (data.message) {
+            document.getElementById('card-message-row').style.display = 'flex';
+            document.getElementById('card-message').textContent = data.message;
+        } else {
+            document.getElementById('card-message-row').style.display = 'none';
+        }
+    }
+
+    function downloadCard() {
+        var card = document.getElementById('rsvp-card');
+        card.style.position = 'fixed';
+        card.style.top = '-9999px';
+        card.style.left = '0';
+
+        html2canvas(card, {
+            backgroundColor: '#f5f3f0',
+            scale: 2,
+            useCORS: true,
+            logging: false
+        }).then(function(canvas) {
+            card.style.top = '-9999px';
+            card.style.left = '-9999px';
+            var link = document.createElement('a');
+            link.download = 'marta-matt-rsvp.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        });
+    }
+
     const SERVER_ENDPOINT = 'https://matt-and-marta.com/api/rsvp';
 
     document.getElementById('rsvpForm').addEventListener('submit', async function(e) {
         e.preventDefault();
 
-        // Collect form data
-        const formData = {
+        const attending = document.getElementById('attending').value;
+        savedFormData = {
             fullName: document.getElementById('fullName').value,
-            email: document.getElementById('email').value,
-            phone: document.getElementById('phone').value,
-            attending: document.getElementById('attending').value,
-            afterparty: document.getElementById('afterparty').value,
+            contact: document.getElementById('contact').value,
+            attending: attending,
+            afterparty: attending === 'yes' ? document.getElementById('afterparty').value : 'n/a',
+            meal: attending === 'yes' ? document.getElementById('meal').value : 'n/a',
             dietary: document.getElementById('dietary').value,
+            songs: document.getElementById('songs').value,
+            message: document.getElementById('message').value,
             timestamp: new Date().toISOString()
         };
 
         try {
             const response = await fetch(SERVER_ENDPOINT, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formData)
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(savedFormData)
             });
 
             if (response.ok) {
-                // Success - show thank you message
+                populateCard(savedFormData);
                 document.getElementById('rsvpForm').style.display = 'none';
                 document.getElementById('successMessage').style.display = 'block';
                 document.getElementById('successMessage').scrollIntoView({ behavior: 'smooth' });
             } else {
-                // Server error
-                alert('There was an error submitting your RSVP. Please try again or contact us directly at (408) 813-0951.');
+                alert('There was an error submitting your RSVP. Please try again or contact us at (408) 813-0951.');
             }
         } catch (error) {
-            // Network error
             console.error('Error submitting RSVP:', error);
-            alert('There was an error submitting your RSVP. Please check your internet connection and try again, or contact us directly at (408) 813-0951.');
+            alert('There was an error submitting your RSVP. Please check your connection and try again, or contact us at (408) 813-0951.');
         }
     });
 </script>
