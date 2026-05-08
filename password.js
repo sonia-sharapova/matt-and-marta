@@ -22,17 +22,7 @@
             <img src="images/Website-Title.png" alt="Marta & Matt" style="max-width: 260px; width: 80%; margin-bottom: 30px; display: block; margin-left: auto; margin-right: auto;">
             <p class="pw-subtitle">please enter the password to continue</p>
             <div class="pw-form-group">
-                <div class="pw-input-wrap">
-                    <input type="password" id="pw-input" placeholder="password" autocomplete="off" />
-                    <button type="button" id="pw-toggle" aria-label="Show password">
-                        <svg id="pw-eye" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
-                        </svg>
-                        <svg id="pw-eye-off" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="display:none">
-                            <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/>
-                        </svg>
-                    </button>
-                </div>
+                <input type="text" id="pw-input" placeholder="password" autocomplete="off" />
             </div>
             <p id="pw-error">incorrect password — please try again</p>
             <button id="pw-submit">enter</button>
@@ -72,26 +62,6 @@
         .pw-form-group {
             margin-bottom: 20px;
         }
-
-        .pw-input-wrap {
-            position: relative;
-            display: flex;
-            align-items: center;
-        }
-
-        #pw-toggle {
-            position: absolute;
-            right: 10px;
-            background: none;
-            border: none;
-            cursor: pointer;
-            color: #999;
-            padding: 0;
-            display: flex;
-            align-items: center;
-        }
-
-        #pw-toggle:hover { color: #555; }
 
         #pw-input {
             width: 100%;
@@ -157,13 +127,5 @@
     document.getElementById('pw-input').addEventListener('keydown', function (e) {
         if (e.key === 'Enter') attempt();
     });
-    document.getElementById('pw-toggle').addEventListener('click', function () {
-        var input = document.getElementById('pw-input');
-        var isHidden = input.type === 'password';
-        input.type = isHidden ? 'text' : 'password';
-        document.getElementById('pw-eye').style.display = isHidden ? 'none' : '';
-        document.getElementById('pw-eye-off').style.display = isHidden ? '' : 'none';
-    });
-
     document.getElementById('pw-input').focus();
 })();
