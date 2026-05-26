@@ -97,7 +97,8 @@
     <div class="content">
         <div class="section">
 
-            <p style="font-style: italic; font-size: 13px; letter-spacing: 0.05em; color: rgba(49,49,49,0.63); margin-bottom: 30px;">RSVP Deadline: Early July 2026</p>
+            <p style="font-style: italic; font-size: 13px; letter-spacing: 0.05em; color: rgba(49,49,49,0.63); margin-bottom: 6px;">RSVP Deadline: July 11th</p>
+            <p style="font-style: italic; font-size: 13px; letter-spacing: 0.05em; color: rgba(49,49,49,0.63); margin-bottom: 30px;">Please write one entry per invitee.</p>
 
             <div id="successMessage" style="display:none; text-align:left;">
                 <p style="margin-bottom: 12px; font-size: 14px;">Thank you so much for your RSVP!</p>
@@ -112,9 +113,10 @@
                     <div id="card-yes-rows">
                         <div class="card-row"><span class="card-label">afterparty</span><span class="card-value" id="card-afterparty"></span></div>
                         <div class="card-row"><span class="card-label">meal preference</span><span class="card-value" id="card-meal"></span></div>
+                        <div class="card-row"><span class="card-label">travel</span><span class="card-value" id="card-transportation"></span></div>
+                        <div class="card-row"><span class="card-label">dietary</span><span class="card-value" id="card-dietary"></span></div>
+                        <div id="card-songs-row" class="card-row"><span class="card-label">song requests</span><span class="card-value" id="card-songs"></span></div>
                     </div>
-                    <div class="card-row"><span class="card-label">dietary</span><span class="card-value" id="card-dietary"></span></div>
-                    <div id="card-songs-row" class="card-row"><span class="card-label">song requests</span><span class="card-value" id="card-songs"></span></div>
                     <div id="card-message-row" class="card-row"><span class="card-label">message</span><span class="card-value" id="card-message"></span></div>
                     <hr class="card-divider">
                     <p class="card-footer">matt-and-marta.com</p>
@@ -170,16 +172,31 @@
                             <option value="fish">Fish</option>
                         </select>
                     </div>
-                </div>
 
-                <div class="form-group">
-                    <label for="dietary">Any dietary restrictions/allergies? * <span style="font-style:italic; font-size:11px; color: rgba(49,49,49,0.63);">(if not applicable, please write "none")</span></label>
-                    <textarea id="dietary" name="dietary" required></textarea>
-                </div>
+                    <div class="form-group">
+                        <label for="transportation">How are you planning on traveling to upstate New York? *</label>
+                        <select id="transportation" name="transportation" onchange="toggleTransportationOther()">
+                            <option value="">Please select</option>
+                            <option value="Train">Train</option>
+                            <option value="Car">Car</option>
+                            <option value="Flying into Newburgh Airport">Flying into Newburgh Airport</option>
+                            <option value="Not Sure">Not Sure</option>
+                            <option value="Other">Other</option>
+                        </select>
+                        <div id="transportation-other-group" style="display:none; margin-top: 10px;">
+                            <input type="text" id="transportation-other" name="transportationOther" placeholder="Please specify">
+                        </div>
+                    </div>
 
-                <div class="form-group">
-                    <label for="songs">Any song suggestions/requests?</label>
-                    <textarea id="songs" name="songs"></textarea>
+                    <div class="form-group">
+                        <label for="dietary">Any dietary restrictions/allergies? * <span style="font-style:italic; font-size:11px; color: rgba(49,49,49,0.63);">(if not applicable, please write "none")</span></label>
+                        <textarea id="dietary" name="dietary"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="songs">Any song suggestions/requests?</label>
+                        <textarea id="songs" name="songs"></textarea>
+                    </div>
                 </div>
 
                 <div class="form-group">
@@ -205,14 +222,35 @@
         var yesFields = document.getElementById('attending-yes-fields');
         var afterparty = document.getElementById('afterparty');
         var meal = document.getElementById('meal');
+        var transportation = document.getElementById('transportation');
+        var dietary = document.getElementById('dietary');
         if (val === 'yes') {
             yesFields.style.display = 'block';
             afterparty.required = true;
             meal.required = true;
+            transportation.required = true;
+            dietary.required = true;
         } else {
             yesFields.style.display = 'none';
             afterparty.required = false;
             meal.required = false;
+            transportation.required = false;
+            dietary.required = false;
+            document.getElementById('transportation-other-group').style.display = 'none';
+            document.getElementById('transportation-other').required = false;
+        }
+    }
+
+    function toggleTransportationOther() {
+        var val = document.getElementById('transportation').value;
+        var otherGroup = document.getElementById('transportation-other-group');
+        var otherInput = document.getElementById('transportation-other');
+        if (val === 'Other') {
+            otherGroup.style.display = 'block';
+            otherInput.required = true;
+        } else {
+            otherGroup.style.display = 'none';
+            otherInput.required = false;
         }
     }
 
@@ -224,17 +262,16 @@
             document.getElementById('card-yes-rows').style.display = 'block';
             document.getElementById('card-afterparty').textContent = data.afterparty;
             document.getElementById('card-meal').textContent = data.meal;
+            document.getElementById('card-transportation').textContent = data.transportation;
+            document.getElementById('card-dietary').textContent = data.dietary;
+            if (data.songs) {
+                document.getElementById('card-songs-row').style.display = 'flex';
+                document.getElementById('card-songs').textContent = data.songs;
+            } else {
+                document.getElementById('card-songs-row').style.display = 'none';
+            }
         } else {
             document.getElementById('card-yes-rows').style.display = 'none';
-        }
-
-        document.getElementById('card-dietary').textContent = data.dietary;
-
-        if (data.songs) {
-            document.getElementById('card-songs-row').style.display = 'flex';
-            document.getElementById('card-songs').textContent = data.songs;
-        } else {
-            document.getElementById('card-songs-row').style.display = 'none';
         }
 
         if (data.message) {
@@ -268,6 +305,10 @@
         document.getElementById('attending-yes-fields').style.display = 'none';
         document.getElementById('afterparty').required = false;
         document.getElementById('meal').required = false;
+        document.getElementById('transportation').required = false;
+        document.getElementById('dietary').required = false;
+        document.getElementById('transportation-other-group').style.display = 'none';
+        document.getElementById('transportation-other').required = false;
         document.getElementById('successMessage').style.display = 'none';
         document.getElementById('rsvpForm').style.display = 'block';
         window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -289,6 +330,10 @@
         contactError.style.display = 'none';
 
         const attending = document.getElementById('attending').value;
+        var transportationVal = attending === 'yes' ? document.getElementById('transportation').value : 'n/a';
+        if (transportationVal === 'Other') {
+            transportationVal = 'Other: ' + document.getElementById('transportation-other').value;
+        }
         savedFormData = {
             fullName: document.getElementById('fullName').value,
             email: email,
@@ -296,8 +341,9 @@
             attending: attending,
             afterparty: attending === 'yes' ? document.getElementById('afterparty').value : 'n/a',
             meal: attending === 'yes' ? document.getElementById('meal').value : 'n/a',
-            dietary: document.getElementById('dietary').value,
-            songs: document.getElementById('songs').value,
+            transportation: transportationVal,
+            dietary: attending === 'yes' ? document.getElementById('dietary').value : 'n/a',
+            songs: attending === 'yes' ? document.getElementById('songs').value : '',
             message: document.getElementById('message').value,
             timestamp: new Date().toISOString()
         };
@@ -338,6 +384,6 @@
         }
     });
 </script>
-<script src="password.js"></script>
+
 </body>
 </html>
