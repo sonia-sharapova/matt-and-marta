@@ -409,7 +409,7 @@ nav ul li.rsvp-link:hover {
         position: absolute;
         margin-top: 260px;
         right: 0;
-        max-width: 260px;
+        max-width: 220px;
     }
 }
 
@@ -431,6 +431,6 @@ nav ul li.rsvp-link:hover {
     }
 
     .home-photo {
-        width: 180px;
+        width: 150px;
     }
 }
