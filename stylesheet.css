@@ -378,7 +378,15 @@ nav ul li.rsvp-link:hover {
         margin: 30px 40px;
     }
     .back {
-        display: none;
+        display: block;
+    }
+
+    .back ul li {
+        font-size: 13px;
+        margin-top: 12px;
+        margin-left: 100px;
+        width: auto;
+        float: none;
     }
 
 
