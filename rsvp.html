@@ -102,7 +102,7 @@
 
             <div id="successMessage" style="display:none; text-align:left;">
                 <p style="margin-bottom: 12px; font-size: 14px;">Thank you so much for your RSVP!</p>
-                <p style="font-size: 12px; letter-spacing: 0.03em; color: rgba(49,49,49,0.7);">Please reach out to us directly at <a href="tel:+14088130951" class="phone-link">(408) 813-0951</a> if you have any questions, concerns or requests.</p>
+                <p style="font-size: 12px; letter-spacing: 0.03em; color: rgba(49,49,49,0.7);">Please reach out to us directly at ---- if you have any questions, concerns or requests.</p>
 
                 <div id="rsvp-card">
                     <p class="card-title">marta &amp; matt</p>
@@ -122,8 +122,8 @@
                     <p class="card-footer">matt-and-marta.com</p>
                 </div>
 
-                <button class="download-btn" onclick="downloadCard()">Download</button>
-                <button class="download-btn" onclick="resetForm()" style="margin-top: 10px;">Submit another RSVP</button>
+                <button">Download</button>
+                <button>Submit another RSVP</button>
             </div>
 
             <form class="rsvp-form" id="rsvpForm">
@@ -376,11 +376,11 @@
                     });
                 }
             } else {
-                alert('There was an error submitting your RSVP. Please try again or contact us at (408) 813-0951.');
+                alert('There was an error submitting your RSVP.');
             }
         } catch (error) {
             console.error('Error submitting RSVP:', error);
-            alert('There was an error submitting your RSVP. Please check your connection and try again, or contact us at (408) 813-0951.');
+            alert('There was an error submitting your RSVP. Please check your connection and try again');
         }
     });
 </script>
